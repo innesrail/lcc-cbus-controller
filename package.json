@@ -1,8 +1,21 @@
 {
 	"name": "can_signal_samples",
-	"type": "module",
 	"version": "0.0.1",
 	"dependencies": {
+		"express": "^4.17.1",
 		"socketcan": "*"
+	},
+	"devDependencies": {
+		"eslint": "^7.24.0",
+		"eslint-config-standard": "^16.0.2",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^4.3.1",
+		"eslint-plugin-react": "^7.23.2"
+	},
+	"main": "index.js",
+	"scripts": {
+		"start": "node server.js",
+		"lint": "eslint ."
 	}
 }
