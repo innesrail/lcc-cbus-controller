@@ -1,0 +1,8 @@
+{
+	"name": "can_signal_samples",
+	"type": "module",
+	"version": "0.0.1",
+	"dependencies": {
+		"socketcan": "*"
+	}
+}
