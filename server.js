@@ -4,6 +4,8 @@ const can = require('socketcan')
 const express = require('express')
 const app = express()
 const port = 3000
+const server = require('http').createServer(app);  
+const io = require('socket.io')(server);
 
 const channel = can.createRawChannel('can0', true /* ask for timestamps */)
 channel.start()
@@ -11,6 +13,14 @@ channel.start()
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
+io.on('connection', function(client) {
+  console.log('Client connected...');
+  client.on('join', function(data) {
+     console.log(data);
+     client.emit('messages', 'Hello from server');
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
@@ -24,11 +34,13 @@ function toHex (number) {
 
 function handleStdMsg (id, data) {
   const msg = new CbusMessage(id, data)
+  io.emit('CBUS', msg.toString())
   console.log(msg.toString())
 }
 
 function handleExtMsg (id, data) {
   const msg = new LccMessage(id, data)
+  io.emit('LCC', msg.toString())
   console.log(msg.toString())
 }
 
