@@ -2,6 +2,7 @@
 	"name": "can_signal_samples",
 	"version": "0.0.1",
 	"dependencies": {
+		"cors": "*",
 		"express": "^4.17.1",
 		"socket.io": "^4.0.1",
 		"socketcan": "*"

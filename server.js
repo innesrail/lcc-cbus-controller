@@ -1,36 +1,47 @@
-const {CbusMessage} = require('./cbus.js')
-const {LccMessage} = require('./lcc.js')
+const { CbusMessage } = require('./cbus.js')
+const { LccMessage } = require('./lcc.js')
 const can = require('socketcan')
 const express = require('express')
+const cors = require('cors')
 const app = express()
+const http = require('http')
+const socketIO = require('socket.io')
+const server = http.createServer(app)
+
+const io = socketIO(server, {
+  cors: true,
+  origins: ['http://localhost:3000']
+})
+
 const port = 3000
-const server = require('http').createServer(app);  
-const io = require('socket.io')(server);
+const room = 'general'
 
 const channel = can.createRawChannel('can0', true /* ask for timestamps */)
 channel.start()
 
+app.use(cors())
+
 /* route requests for static files to appropriate directory */
-server.use('/public', express.static(__dirname + '/public'))
+app.use(express.static('public'))
 
 /* final catch-all route to index.html defined last */
-server.get('/*', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+// app.get('/*', (req, res) => {
+//  res.sendFile(__dirname + '/public/index.html');
+// })
+
+io.on('connection', (socket) => {
+  console.log('Client connected ....')
+  socket.join(room)
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected ....')
+    socket.leave(room)
+  })
 })
 
-io.on('connection', function(client) {
-  console.log('Client connected...');
-  client.on('join', function(data) {
-     console.log(data);
-     client.emit('messages', 'Hello from server');
-  });
-});
-
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-
 
 function toHex (number) {
   return ('00000000' + number.toString(16)).slice(-8)
@@ -38,13 +49,13 @@ function toHex (number) {
 
 function handleStdMsg (id, data) {
   const msg = new CbusMessage(id, data)
-  io.emit('CBUS', msg.toString())
+  io.emit(room, msg.toString())
   console.log(msg.toString())
 }
 
 function handleExtMsg (id, data) {
   const msg = new LccMessage(id, data)
-  io.emit('LCC', msg.toString())
+  io.emit(room, msg.toString())
   console.log(msg.toString())
 }
 
