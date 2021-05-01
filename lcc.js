@@ -1,5 +1,6 @@
 //import buffer from 'buffer'
 
+
 class LccMessage {
   constructor (id, data) {
     this.id = id
@@ -33,4 +34,19 @@ class LccMessage {
   }
 };
 
-exports.LccMessage = LccMessage
+class LccNode {
+
+}
+
+class LCC {
+  constructor () {
+    this.nodes = []
+  }
+
+}
+
+exports = {
+  LccMessage : LccMessage,
+  LccNode : LccNode,
+  LCC : LCC
+}
