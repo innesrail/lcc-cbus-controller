@@ -24,10 +24,10 @@ app.use(cors())
 /* route requests for static files to appropriate directory */
 app.use(express.static('public'))
 
-/* final catch-all route to index.html defined last */
-// app.get('/*', (req, res) => {
-//  res.sendFile(__dirname + '/public/index.html');
-// })
+// final catch-all route to index.html defined last */
+ app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+ })
 
 io.on('connection', (socket) => {
   console.log('Client connected ....')
